@@ -1,9 +1,9 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8" %>
 <%@ page import="java.sql.*" %>
+<%@ page import="util.ConnectionPool" %>
 <%
-  Class.forName("com.mysql.jdbc.Driver");
-  Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/mysns", "root", "dudqls15!!");
+  Connection conn = ConnectionPool.get();
   Statement stmt = conn.createStatement();
   ResultSet rs = stmt.executeQuery("SELECT id, name, ts FROM user");
   

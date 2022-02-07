@@ -12,11 +12,14 @@
   if(ups.equals(ups2)){
     Class.forName("com.mysql.jdbc.Driver");
     Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/mysns", "root", "dudqls15!!");
-    Statement stmt = conn.createStatement();
-    String sql = "INSERT INTO user(id, password, name) VALUES";
-    sql += "('" + uid +"', '" + ups + "', '" + uname + "')";
+    String sql = "INSERT INTO user(id, password, name) VALUES(?, ?, ?)";
     
-    int count = stmt.executeUpdate(sql);
+    PreparedStatement stmt = conn.prepareStatement(sql);
+    stmt.setString(1, uid);
+    stmt.setString(2, ups);
+    stmt.setString(3, uname);
+    
+    int count = stmt.executeUpdate();
     if(count == 1){
       out.print("회원가입에 성공하셨습니다.");
     }
