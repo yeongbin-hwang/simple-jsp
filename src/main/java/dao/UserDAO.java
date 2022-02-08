@@ -86,4 +86,27 @@ public class UserDAO {
       if(rs != null) rs.close();
     }
   }
+  public ArrayList<UserObj> getList() throws NamingException, SQLException{
+    Connection conn = null;
+    Statement stmt = null;
+    ResultSet rs = null;
+    try {
+      String sql = "SELECT * FROM user ORDER BY ts DESC";
+      conn = ConnectionPool.get();
+      stmt = conn.createStatement();
+      rs = stmt.executeQuery(sql);
+      
+      ArrayList<UserObj> Users = new ArrayList<UserObj>();
+      while(rs.next()) {
+        Users.add(new UserObj(rs.getString("id"), rs.getString("password"), rs.getString("name"), rs.getString("ts")));
+      }
+      
+      return Users;
+    }
+    finally {
+      if(conn != null) conn.close();
+      if(stmt != null) stmt.close();
+      if(rs != null) rs.close();
+    }
+  }
 }
