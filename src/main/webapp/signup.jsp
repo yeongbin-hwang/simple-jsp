@@ -1,6 +1,6 @@
 <%@ page language="java" contentType="text/html"
     pageEncoding="UTF-8" %>
-<%@ page import="java.sql.*" %>
+<%@ page import="dao.UserDAO" %>
 <%
   request.setCharacterEncoding("utf-8");
 
@@ -10,23 +10,19 @@
   String uname = request.getParameter("name");
   
   if(ups.equals(ups2)){
-    Class.forName("com.mysql.jdbc.Driver");
-    Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/mysns", "root", "dudqls15!!");
-    String sql = "INSERT INTO user(id, password, name) VALUES(?, ?, ?)";
+    UserDAO dao = new UserDAO();
     
-    PreparedStatement stmt = conn.prepareStatement(sql);
-    stmt.setString(1, uid);
-    stmt.setString(2, ups);
-    stmt.setString(3, uname);
+    if(dao.exists(uid)){
+      out.print("이미 가입한 회원입니다.");
+      return;
+    }
     
-    int count = stmt.executeUpdate();
-    if(count == 1){
+    if(dao.insert(uid, ups, uname)){
       out.print("회원가입에 성공하셨습니다.");
     }
     else {
       out.print("회원가입에 실패하셨습니다.");
     }
-    stmt.close();conn.close();
   }
   else {
     out.print("비밀번호가 일치하지 않습니다.");
