@@ -19,3 +19,18 @@ var AJAX = {
     jQuery.ajax(callobj);
   }
 };
+
+var Page = {
+  init : function (cbfunc){
+    AJAX.call("jsp/session.jsp", null, function(data){
+      var uid = data.trim();
+      if(uid == "null"){
+        alert("Service that needs login");
+        window.location.href = "login.html";
+      }
+      else {
+        if(cbfunc != null) cbfunc(uid);
+      }
+    });
+  }
+};

@@ -27,7 +27,7 @@
   </div>
   <div class="page-body">
     <div class="section mtop-30 pad-24">
-      <input type="text" id="id" placeholder="id (Email address)" required>
+      <input type="text" id="id" placeholder="id (Email address)">
       <textarea id="content" cols="20" rows="5">Comment here</textarea>
       <input type="submit" class="mtop-20" value="Upload" onclick="upload()">
     </div>
@@ -41,6 +41,14 @@
 <script src="js/core.js"></script>
 <script src="js/jquery-3.6.0.min.js"></script>
 <script>
+  $(document).ready(function(){
+    Page.init(start);
+  });
+
+  function start(uid){
+      // Page setup codes will be placed here
+  }
+
   function upload(){
     var id = $("#id").val().trim();
     if(id == ""){
