@@ -9,9 +9,9 @@
   
   FeedDAO dao = new FeedDAO();
   if(dao.insert(uid, ucontent)){
-    out.print("글 업로드에 성공하셨습니다.");
+    out.print("OK");
   }
   else {
-    out.print("글 업로드에 실패하셨습니다.");
+    out.print("ER");
   }
 %>

@@ -7,27 +7,59 @@
   <title>MySNS</title>
 </head>
 <body>
-  <form action="jsp/login.jsp" method="post">
-    <div class="page-hdr">
-      MySNS
+  <div class="page-hdr">
+    MySNS
+  </div>
+  <div class="page-body">
+    <div class="section mtop-30 pad-24">
+      <input type="text" id="id" placeholder="id (Email address)">
+      <input type="password" id="ps" class="mtop-10" placeholder="password">
+      <input type="submit" class="mtop-20" value="Login" onclick="login()">
     </div>
-    <div class="page-body">
-      <div class="section mtop-30 pad-24">
-        <input type="text" name="id" placeholder="id (Email address)" required>
-        <input type="password" name="ps" class="mtop-10" placeholder="password" required>
-        <input type="submit" class="mtop-20" value="Login">
+    <div class="section mtop-30 pad-24">
+      <div class="desc mbot-20 mtop-20">
+        Don't have id?
+        You can be a member of MySNS through simple signup procedure.
       </div>
-      <div class="section mtop-30 pad-24">
-        <div class="desc mbot-20 mtop-20">
-          Don't have id?
-          You can be a member of MySNS through simple signup procedure.
-        </div>
-        <a href="signup.html"><div class="button">Signup</div></a>
-      </div>
+      <a href="signup.html"><div class="button">Signup</div></a>
     </div>
-    <div class="page-footer">
-      Copyright: mysns.com, 2022
-    </div>
-  </form>
+  </div>
+  <div class="page-footer">
+    Copyright: mysns.com, 2022
+  </div>
 </body>
 </html>
+
+<script src="js/jquery-3.6.0.min.js"></script>
+<script src="js/core.js"></script>
+<script>
+  function login(){
+    var id = $("#id").val().trim();
+    if(id == ""){
+      alert("Enter the id");
+      $("#id").focus();
+      return;
+    }
+
+    var ps = $("#ps").val().trim();
+    if(ps == ""){
+      alert("Enter the password");
+      $("#ps").focus();
+      return;
+    }
+
+    var url = "jsp/login.jsp?id=" + id + "&ps=" + ps;
+    AJAX.call(url, null, function(data){
+      var code = data.trim();
+      if(code == "NE"){
+        alert("don't exist the id");
+      }
+      else if(code == "PE"){
+        alert("don't match the password with id");
+      }
+      else {
+        window.location.href = "jsp/main.jsp";
+      }
+    });
+  }
+</script>

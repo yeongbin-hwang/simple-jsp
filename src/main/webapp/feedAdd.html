@@ -22,20 +22,55 @@
   </style>
 </head>
 <body>
-  <form action="jsp/feedAdd.jsp" method="post">
-    <div class="page-hdr">
-      MySNS
+  <div class="page-hdr">
+    MySNS
+  </div>
+  <div class="page-body">
+    <div class="section mtop-30 pad-24">
+      <input type="text" id="id" placeholder="id (Email address)" required>
+      <textarea id="content" cols="20" rows="5">Comment here</textarea>
+      <input type="submit" class="mtop-20" value="Upload" onclick="upload()">
     </div>
-    <div class="page-body">
-      <div class="section mtop-30 pad-24">
-        <input type="text" name="id" placeholder="id (Email address)" required>
-        <textarea name="content" cols="20" rows="5">Comment here</textarea>
-        <input type="submit" class="mtop-20" value="Upload">
-      </div>
-    </div>
-    <div class="page-footer">
-      Copyright: mysns.com, 2022
-    </div>
-  </form>
+  </div>
+  <div class="page-footer">
+    Copyright: mysns.com, 2022
+  </div>
 </body>
 </html>
+
+<script src="js/core.js"></script>
+<script src="js/jquery-3.6.0.min.js"></script>
+<script>
+  function upload(){
+    var id = $("#id").val().trim();
+    if(id == ""){
+      alert("Enter the id");
+      $("#id").focus();
+      return;
+    }
+
+    var content = $("#content").val().trim();
+    if(content == ""){
+      alert("Enter the content");
+      $("#content").focus();
+      return;
+    }
+
+    var url = "jsp/feedAdd.jsp";
+    var param = {
+      id: id,
+      content: content,
+    };
+
+    AJAX.call(url, param, function(data){
+      var code = data.trim();
+      if(code == "ER"){
+        alert("Error while uploading the content");
+      }
+      else {
+        alert("Complete uploading the content")
+        window.location.href = "jsp/main.jsp";
+      }
+    });
+  }
+</script>

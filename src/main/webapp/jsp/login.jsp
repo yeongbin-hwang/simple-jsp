@@ -10,12 +10,12 @@
   
   if(result == 0){
     session.setAttribute("id", uid);
-    response.sendRedirect("main.jsp");
+    out.print("OK");
   }
   else if(result == 1){
-    out.print("아이디가 존재하지 않습니다.");
+    out.print("NE");
   }
   else if(result == 2){
-    out.print("비밀번호가 일치하지 않습니다.");
+    out.print("PE");
   }
 %>
