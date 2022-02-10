@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta name=viewport content="width=device-width, initial-scale=1, user-scalable=0">
+  <meta charset="UTF-8">
+  <link rel="stylesheet" href="css/core.css?after">
+  <link rel="stylesheet" href="css/main.css?after">
+  <title>MySNS</title>
+</head>
+<body>
+  <div class="page-hdr">
+    MySNS
+  </div>
+  <div class="page-body">
+    <div class="page-mnu">
+      <div class="menu" onclick="addFeed()">글쓰기</div>
+      <div class="menu" onclick="">친구보기</div>
+      <div class="menu" onclick="">내정보</div>
+    </div>
+    <table id="list" class="section mtop-20 pad-16"></table>
+  </div>
+  <div class="page-footer">
+    Copyright: mysns.com, 2022
+  </div>
+</body>
+</html>
+
+<script src="js/jquery-3.6.0.min.js"></script>
+<script src="js/core.js"></script>
+<script>
+  $(document).ready(function(){
+    Page.init(start);
+  });
+
+  function start(){
+    var url = "jsp/main.jsp";
+    AJAX.call(url, null, function(data){
+      var feeds = JSON.parse(data.trim());
+      show(feeds);
+    });
+  }
+
+  function show(feeds){
+    var str = "";
+    str += "<tr><th colspan=3 align=center>작성글 리스트</th></tr>";
+    for(var i = 0; i< feeds.length; i++){
+      str += "<tr><td colspan=3><hr></td></tr>";
+      str += "<tr>";
+      str += "<td>" + feeds[i].id +"</td>";
+      str += "<td><small>&nbsp;(" + feeds[i].ts +")</small></td></tr>";
+      str += "<tr><td colspan=2>" + feeds[i].content +"</td>";
+      str += "</tr>";
+    }
+
+    $("#list").html(str);
+  }
+
+  function addFeed(){
+    window.location.href = "feedAdd.html";
+  }
+</script>

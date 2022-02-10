@@ -83,7 +83,7 @@ public class UserDAO {
       
       String jsonstr = rs.getString("jsonstr");
       JSONObject obj = (JSONObject) (new JSONParser()).parse(jsonstr);
-      String pass = obj.get("password").toString();
+      String pass = obj.get("ps").toString();
       
       if(!password.equals(pass)) return 2;
       return 0;

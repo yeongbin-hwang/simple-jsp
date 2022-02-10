@@ -64,11 +64,10 @@
       return;
     }
 
+    var jsonobj = {id: id, content: content, ts: getTime()};
+    var param = {jsonstr: JSON.stringify(jsonobj)};
+
     var url = "jsp/feedAdd.jsp";
-    var param = {
-      id: id,
-      content: content,
-    };
 
     AJAX.call(url, param, function(data){
       var code = data.trim();
@@ -77,8 +76,20 @@
       }
       else {
         alert("Complete uploading the content")
-        window.location.href = "jsp/main.jsp";
+        window.location.href = "main.html";
       }
     });
+  }
+  function getTime() {
+    var date = new Date();
+    var year = date.getFullYear();
+    var month = ("0" + (1 + date.getMonth())).slice(-2);
+    var day = ("0" + date.getDate()).slice(-2);
+
+    var hour = ("0" + date.getHours()).slice(-2);
+    var min = ("0" + date.getMinutes()).slice(-2);
+    var sec = ("0" + date.getSeconds()).slice(-2);
+
+    return year + "-" + month + "-" + day + " " + hour + ":" + min + ":" + sec;
   }
 </script>
