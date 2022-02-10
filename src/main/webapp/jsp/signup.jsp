@@ -5,27 +5,19 @@
   request.setCharacterEncoding("utf-8");
 
   String uid = request.getParameter("id");
-  String ups = request.getParameter("ps");
-  String ups2 = request.getParameter("ps2");
-  String uname = request.getParameter("name");
-  
-  if(!ups.equals(ups2)){
-    out.print("비밀번호가 일치하지 않습니다.");
-    return;
-  }
+  String jsonstr = request.getParameter("jsonstr");
   
   UserDAO dao = new UserDAO();
-    
   if(dao.exists(uid)){
-    out.print("이미 가입한 회원입니다.");
+    out.print("EX");
     return;
   }
   
-  if(dao.insert(uid, ups, uname)){
+  if(dao.insert(uid, jsonstr)){
     session.setAttribute("id", uid);
-    response.sendRedirect("main.jsp");
+    out.print("OK");
   }
   else {
-    out.print("회원가입에 실패하셨습니다.");
+    out.print("ER");
   }
 %>

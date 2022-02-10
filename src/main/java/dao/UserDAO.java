@@ -4,19 +4,22 @@ import java.sql.*;
 import javax.naming.NamingException;
 import util.ConnectionPool;
 import java.util.*;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 
 public class UserDAO {
-  public boolean insert(String id, String password, String name) throws NamingException, SQLException{
+  public boolean insert(String id, String jsonstr) throws NamingException, SQLException{
     Connection conn = null;
     PreparedStatement stmt = null;
     try {
-      String sql = "INSERT INTO user(id, password, name) VALUES(?, ?, ?)";
+      String sql = "INSERT INTO user(id, jsonstr) VALUES(?, ?)";
       conn = ConnectionPool.get();
       stmt = conn.prepareStatement(sql);
       
       stmt.setString(1, id);
-      stmt.setString(2, password);
-      stmt.setString(3, name);
+      stmt.setString(2, jsonstr);
       
       int count = stmt.executeUpdate();
       return (count > 0) ? true: false;
@@ -64,12 +67,12 @@ public class UserDAO {
       if(stmt != null) stmt.close();
     }
   }
-  public int login(String id, String password) throws NamingException, SQLException {
+  public int login(String id, String password) throws NamingException, SQLException, ParseException{
     Connection conn = null;
     PreparedStatement stmt = null;
     ResultSet rs = null;
     try {
-      String sql = "SELECT password from user where id = ?";
+      String sql = "SELECT jsonstr from user where id = ?";
       conn = ConnectionPool.get();
       stmt = conn.prepareStatement(sql);
       
@@ -77,7 +80,12 @@ public class UserDAO {
       
       rs = stmt.executeQuery();
       if(!rs.next()) return 1;
-      if(!password.equals(rs.getString("password"))) return 2;
+      
+      String jsonstr = rs.getString("jsonstr");
+      JSONObject obj = (JSONObject) (new JSONParser()).parse(jsonstr);
+      String pass = obj.get("password").toString();
+      
+      if(!password.equals(pass)) return 2;
       return 0;
     }
     finally {
@@ -86,22 +94,24 @@ public class UserDAO {
       if(rs != null) rs.close();
     }
   }
-  public ArrayList<UserObj> getList() throws NamingException, SQLException{
+  public String getList() throws NamingException, SQLException{
     Connection conn = null;
     Statement stmt = null;
     ResultSet rs = null;
     try {
-      String sql = "SELECT * FROM user ORDER BY ts DESC";
+      String sql = "SELECT jsonstr FROM user";
       conn = ConnectionPool.get();
       stmt = conn.createStatement();
       rs = stmt.executeQuery(sql);
       
-      ArrayList<UserObj> Users = new ArrayList<UserObj>();
+      String str = "[";
+      int cnt = 0;
       while(rs.next()) {
-        Users.add(new UserObj(rs.getString("id"), rs.getString("password"), rs.getString("name"), rs.getString("ts")));
+        if(cnt++ > 0) str += ", ";
+        str += rs.getString("jsonstr");
       }
       
-      return Users;
+      return str + "]";
     }
     finally {
       if(conn != null) conn.close();
