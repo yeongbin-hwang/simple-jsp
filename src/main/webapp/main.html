@@ -17,7 +17,7 @@
       <div class="menu" onclick="">친구보기</div>
       <div class="menu" onclick="">내정보</div>
     </div>
-    <table id="list" class="section mtop-20 pad-16"></table>
+    <div id="list" class="section"></div>
     <div class="section mtop-10 mbot-30 pad-16">
         <div class="button" onclick="getNext()">작성글 더 보기</div>
     </div>
@@ -50,19 +50,30 @@
   function show(feeds){
     var str = "";
     for(var i = 0; i< feeds.length; i++){
-      var name = feeds[i].id;
-      if(feeds[i].user != null){
-        name = feeds[i].user.name;
-      }
-      str += "<tr>";
-      str += "<td>" + name +"</td>";
-      str += "<td><small>&nbsp;(" + feeds[i].ts +")</small></td></tr>";
-      str += "<tr><td colspan=2>" + feeds[i].content +"</td>";
-      str += "</tr>";
-      str += "<tr><td colspan=3><hr></td></tr>";
+      str += getFeedCode(feeds[i]);
     }
 
     $("#list").append(str);
+  }
+  function getFeedCode(feed){
+    var name = (feed.user == null) ? feed.id : feed.user.name;
+
+    var str = "<div class='feed' onclick='showFeed(" + feed.no + ")'>";
+    str += "<div class='author'>";
+    if (feed.user == null || feed.user.images == null) {
+      str += "<div class='photo'></div>";
+    }
+    else {
+      var imgstr = "images/" + feed.user.images[0];
+      str += "<div class='photo' style='background-image: url(\"" + imgstr + "\")'></div>";
+    }
+    str += "<div class='name'>" + name + "</div>";
+    str += "</div>";
+    
+    str += "<div class='text'>" + feed.content + "</div>";
+    str += "</div>";
+    
+    return str;
   }
 
   function getNext(){
