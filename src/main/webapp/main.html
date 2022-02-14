@@ -3,8 +3,8 @@
 <head>
   <meta name=viewport content="width=device-width, initial-scale=1, user-scalable=0">
   <meta charset="UTF-8">
-  <link rel="stylesheet" href="css/core.css?after">
-  <link rel="stylesheet" href="css/main.css?after">
+  <link rel="stylesheet" href="css/core.css?after?ver=1">
+  <link rel="stylesheet" href="css/main.css?after?ver=1">
   <title>MySNS</title>
 </head>
 <body>
@@ -18,6 +18,9 @@
       <div class="menu" onclick="">내정보</div>
     </div>
     <table id="list" class="section mtop-20 pad-16"></table>
+    <div class="section mtop-10 mbot-30 pad-16">
+        <div class="button" onclick="getNext()">작성글 더 보기</div>
+    </div>
   </div>
   <div class="page-footer">
     Copyright: mysns.com, 2022
@@ -32,27 +35,48 @@
     Page.init(start);
   });
 
+  var minNo = -1;
   function start(){
-    var url = "jsp/main.jsp";
+    var url = "jsp/feedGetGroup.jsp";
     AJAX.call(url, null, function(data){
       var feeds = JSON.parse(data.trim());
+      if(feeds.length > 0){
+        minNo = feeds[feeds.length - 1].no;
+      }
       show(feeds);
     });
   }
 
   function show(feeds){
     var str = "";
-    str += "<tr><th colspan=3 align=center>작성글 리스트</th></tr>";
     for(var i = 0; i< feeds.length; i++){
-      str += "<tr><td colspan=3><hr></td></tr>";
+      var name = feeds[i].id;
+      if(feeds[i].user != null){
+        name = feeds[i].user.name;
+      }
       str += "<tr>";
-      str += "<td>" + feeds[i].id +"</td>";
+      str += "<td>" + name +"</td>";
       str += "<td><small>&nbsp;(" + feeds[i].ts +")</small></td></tr>";
       str += "<tr><td colspan=2>" + feeds[i].content +"</td>";
       str += "</tr>";
+      str += "<tr><td colspan=3><hr></td></tr>";
     }
 
-    $("#list").html(str);
+    $("#list").append(str);
+  }
+
+  function getNext(){
+    var params = {maxNo: minNo};
+    AJAX.call("jsp/feedGetGroup.jsp", params, function(data){
+      var feeds = JSON.parse(data.trim());
+      if(feeds.length > 0){
+        minNo = feeds[feeds.length - 1].no;
+        show(feeds);
+      }
+      else {
+        alert("last feed");
+      }
+    });
   }
 
   function addFeed(){

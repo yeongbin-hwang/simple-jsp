@@ -96,4 +96,5 @@ body {
   color: #578fd8;
   border: 1px solid #578fd8;
   border-radius: 4px;
+  cursor: pointer;
 }
