@@ -21,7 +21,7 @@ var AJAX = {
 };
 
 var Page = {
-  init : function (cbfunc){
+  init : function (cbfunc, url){
     AJAX.call("jsp/session.jsp", null, function(data){
       var uid = data.trim();
       if(uid == "null"){
@@ -29,8 +29,53 @@ var Page = {
         window.location.href = "login.html";
       }
       else {
-        if(cbfunc != null) cbfunc(uid);
+        var param = (url == null) ? null : SessionStore.get(url);
+        if(cbfunc != null) cbfunc(uid, param);
       }
     });
+  },
+
+  go : function(url, param){
+    SessionStore.set(url, param);
+    window.location.href = url;
+  },
+};
+
+var SessionStore = {
+  set: function (name, val){
+    sessionStorage.setItem(name, JSON.stringify(val));
+  },
+
+  get: function (name){
+    var str = sessionStorage.getItem(name);
+    return (str == null || str == "null") ? null : JSON.parse(str);
+  },
+
+  remove: function (name){
+    sessionStorage.removeItem(name);
+  },
+};
+
+var DataCache = {
+  set: function (name, data){
+    var obj = {ts: Date.now(), data: data};
+    SessionStore.set(name, obj);
+  },
+
+  get: function (name){
+    var obj = SessionStore.get(name);
+    if(obj == null)
+      return null;
+
+    var diff = (Date.now() - obj.ts) / 60000;
+    if(diff > 10){
+      SessionStore.remove(name);
+      return null;
+    }
+    return obj.data;
+  },
+
+  remove: function (name){
+    SessionStore.remove(name);
   }
 };

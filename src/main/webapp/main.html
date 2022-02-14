@@ -29,25 +29,41 @@
 </html>
 
 <script src="js/jquery-3.6.0.min.js"></script>
-<script src="js/core.js"></script>
+<script src="js/core.js?ver=2"></script>
 <script>
   $(document).ready(function(){
     Page.init(start);
   });
 
   var minNo = -1;
+  var feedList = [];
   function start(){
-    var url = "jsp/feedGetGroup.jsp";
-    AJAX.call(url, null, function(data){
-      var feeds = JSON.parse(data.trim());
-      if(feeds.length > 0){
-        minNo = feeds[feeds.length - 1].no;
-      }
+    var feeds = DataCache.get("mainCache");
+    if(feeds != null){
+      console.log("[start] fetch the existing feed list from DataCache ...");
+      console.log(feeds);
+
+      feedList = feeds;
       show(feeds);
-    });
+    }
+    else{
+      AJAX.call("jsp/feedGetGroup.jsp", null, function(data){
+        var feeds = JSON.parse(data.trim());
+        console.log("[start] fetch a new feed list from the server ...");
+        console.log(feeds);
+        
+        feedList = feeds;
+        DataCache.set("mainCache", feeds);
+        show(feeds);
+      });
+    }
   }
 
   function show(feeds){
+    // set minNo to detect the end of the list
+    if(feeds.length > 0){
+      minNo = feeds[feeds.length - 1].no;
+    }
     var str = "";
     for(var i = 0; i< feeds.length; i++){
       str += getFeedCode(feeds[i]);
@@ -76,17 +92,22 @@
     return str;
   }
 
+  function showFeed(fno){
+    for(var i=0; i<feedList.length; i++){
+      if(feedList[i].no == fno){
+        Page.go("feedView.html", feedList[i]);
+        return;
+      }
+    }
+  }
+
   function getNext(){
     var params = {maxNo: minNo};
     AJAX.call("jsp/feedGetGroup.jsp", params, function(data){
       var feeds = JSON.parse(data.trim());
-      if(feeds.length > 0){
-        minNo = feeds[feeds.length - 1].no;
-        show(feeds);
-      }
-      else {
-        alert("last feed");
-      }
+      feedList = feedList.concat(feeds);
+      DataCache.set("mainCache", feedList);
+      show(feeds);
     });
   }
 

@@ -75,7 +75,8 @@
         alert("Error while uploading the content");
       }
       else {
-        alert("Complete uploading the content")
+        alert("Complete uploading the content");
+        DataCache.remove("mainCache");
         window.location.href = "main.html";
       }
     });
