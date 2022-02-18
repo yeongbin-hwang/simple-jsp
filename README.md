@@ -7,3 +7,6 @@ In this project, I use some basic concepts of database and jsp.
 3. Apply AJAX for improving the performance
 4. Optimize the data using local and session storage
 5. Apply the CSS
+
+# To-do
+1. Implement some functions like friend management.
